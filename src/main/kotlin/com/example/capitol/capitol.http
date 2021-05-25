@@ -1,0 +1,25 @@
+###
+POST {{host-url}}//contact
+Content-Type: application/json
+
+{
+  "name": "Tim",
+  "email": "Tim@testURL.com",
+  "message": "This is a test email"
+}
+
+###
+
+POST {{host-url}}//contact
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "NotvalidEmail",
+  "message": "Test"
+}
+
+###
+
+GET {{host-url}}//api/account
+
