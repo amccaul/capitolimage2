@@ -40,7 +40,15 @@ dependencies {
 
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    /* Database driver */
     runtimeOnly("org.postgresql:postgresql")
+    //runtime("org.postgresql:postgresql")
+    //implementation("org.postgresql:postgresql")
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    //runtime(group = "org.postgresql", name = "postgresql", version = "42.1.4")
+
+
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 

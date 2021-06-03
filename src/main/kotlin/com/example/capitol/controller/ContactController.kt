@@ -16,7 +16,7 @@ class ContactController (
     var contactSender:ContactSender
         ){
 
-    @PreAuthorize("permitAll")
+   // @PreAuthorize("permitAll")
     @GetMapping("/contact")
     fun sendContact(@RequestBody contactViewModel: ContactViewModel,
                     bindingResult:BindingResult) {

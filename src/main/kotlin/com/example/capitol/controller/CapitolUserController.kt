@@ -34,25 +34,30 @@ class CapitolUserController {
 
     @PostMapping("/login")
     fun login(@RequestBody username: String, password:String):Boolean{
-        //return capitolUserRepository.exists(username)
+        return capitolUserRepository.exists(username)
         //capitolUserService.
-        return true
+        //return true
     }
 
 
     @GetMapping("/user/getAllUsers")
+    fun getCapitolUser():String{
+        return "Teststring"
+    }
+    /*
+    @GetMapping("/user/getAllUsers")
     fun getCapitolUser():List<CapitolUser>{
         return capitolUserRepository.findAll()
     }
+*/
 
 
-
-    @GetMapping("/account")
+    @GetMapping("/user/account")
     fun account(): String {
         return "account-details works!"
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/user/{username}")
     fun getCapitolUser(@PathVariable username: String): CapitolUser {
         return capitolUserRepository.findByUsername(username)
     }

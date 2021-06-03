@@ -1,4 +1,4 @@
-package rc.bootsecurity.security
+package com.example.capitol.config
 
 import com.example.capitol.config.CapitolUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
 import java.lang.Exception
 
 @Configuration
@@ -41,13 +40,22 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()
-            .anyRequest().permitAll()
-            //.antMatchers(HttpMethod.GET, "/api/contact").permitAll()
+            .antMatchers("/api/user").authenticated()
+            //.antMatchers("/api/contact").permitAll()
+            .antMatchers("/api/contact").permitAll()
+
+            .and()
+            .httpBasic()
+
+/*http
+            .authorizeRequests()
+            .antMatchers("/**").permitAll()
             .and()
             .csrf().disable()
-
-            .httpBasic()
-    //http
+            .httpBasic()*/
+        //.antMatchers(HttpMethod.GET, "/api/contact").permitAll()
+*/
+        //http
             //.cors()
            // .and()
             //.csrf().disable()
