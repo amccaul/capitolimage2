@@ -40,11 +40,14 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()
-            .antMatchers("/api/user").authenticated()
-            //.antMatchers("/api/contact").permitAll()
+            .antMatchers("/api/user/**").authenticated()
+
             .antMatchers("/api/contact").permitAll()
+            .antMatchers("/api/user/create").permitAll()
+            .antMatchers("/api/user/exists").permitAll()
 
             .and()
+            .csrf().disable()
             .httpBasic()
 
 /*http

@@ -17,7 +17,7 @@ class ContactController (
         ){
 
    // @PreAuthorize("permitAll")
-    @GetMapping("/contact")
+    @PostMapping("/contact")
     fun sendContact(@RequestBody contactViewModel: ContactViewModel,
                     bindingResult:BindingResult) {
         if (bindingResult.hasErrors())

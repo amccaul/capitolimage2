@@ -1,8 +1,10 @@
 package com.example.capitol.controller
 
+import com.example.capitol.config.CapitolUserDetailsService
 import com.example.capitol.entity.CapitolUser
 import com.example.capitol.repository.CapitolUserRepository
-import com.example.capitol.service.CapitolUserService
+import com.example.capitol.viewmodel.NewUserViewModel
+import com.example.capitol.viewmodel.PasswordMatchesValidator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
@@ -18,38 +20,52 @@ class CapitolUserController {
     lateinit var capitolUserRepository: CapitolUserRepository
 
     @Autowired
-    lateinit var capitolUserService: CapitolUserService
+    lateinit var capitolUserDetailsService: CapitolUserDetailsService
 
     @PostMapping("/user/save")
-    fun save(@RequestBody capitolUser: CapitolUser):String{
-        capitolUserRepository.save(capitolUser)
+    fun save(@RequestBody newUserViewModel: NewUserViewModel):String{
+        //TODO check on server side to see if username exists and if it's valid
+        //capitolUserRepository.exists(capitolUser.username)
+
+        //check to see if passwords match
+
+        //check to see if password is valid
+
+        //check to see if username is valid
+
+        //check to see if username exists
+
+
+
+        //var newCapitolUser:CapitolUser =
+        //capitolUserRepository.save(newCapitolUser)
         return "saved"
     }
 
     @PostMapping("/user/exists")
     fun exists(@RequestBody username: String):Boolean{
-        return capitolUserRepository.exists(username)
-
+        return capitolUserDetailsService.existsByUsername(username);
     }
-
-    @PostMapping("/login")
+/*
+    //TODO get working
+    @PostMapping("/user/login")
     fun login(@RequestBody username: String, password:String):Boolean{
         return capitolUserRepository.exists(username)
         //capitolUserService.
         //return true
     }
+*/
 
-
+/*
     @GetMapping("/user/getAllUsers")
     fun getCapitolUser():String{
         return "Teststring"
     }
-    /*
+    */
     @GetMapping("/user/getAllUsers")
     fun getCapitolUser():List<CapitolUser>{
-        return capitolUserRepository.findAll()
+        return capitolUserDetailsService.findAll()
     }
-*/
 
 
     @GetMapping("/user/account")
@@ -58,7 +74,7 @@ class CapitolUserController {
     }
 
     @GetMapping("/user/{username}")
-    fun getCapitolUser(@PathVariable username: String): CapitolUser {
+    fun getCapitolUser(@PathVariable username: String): CapitolUser? {
         return capitolUserRepository.findByUsername(username)
     }
 

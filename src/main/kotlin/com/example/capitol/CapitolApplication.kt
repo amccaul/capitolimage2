@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan
    "com.example.capitol.entity",
    "com.example.capitol.mail",
    "com.example.capitol.repository",
-   "com.example.capitol.service",
    "com.example.capitol.viewmodel")
 class CapitolApplication
 
@@ -18,5 +17,4 @@ fun main(args: Array<String>) {
    runApplication<CapitolApplication>(*args)
 
 }
-//TODO redirect 8082 HTTP to 8443 HTTPS
 
