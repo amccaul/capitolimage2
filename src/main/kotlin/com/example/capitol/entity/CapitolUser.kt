@@ -7,13 +7,12 @@ import javax.persistence.*
 
 @Table(name="capitoluser")
 @Entity (name = "CapitolUser")
-//data class CapitolUser : User (
-//data class CapitolUser (
 data class CapitolUser (
     @Id
-    @Column(name="userId")
+    @Column(updatable = false, name="userId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var userId:Int = -1,
+    //it needs to be -1 then it will be replaced automatically by the generated value strategy
+    var userId:Int=-1,
 
     @Column(nullable=false, unique = true)
     var username:String,

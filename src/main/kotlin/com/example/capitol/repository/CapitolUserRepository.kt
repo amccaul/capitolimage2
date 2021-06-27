@@ -12,9 +12,12 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     @Query("SELECT u FROM CapitolUser u WHERE u.username = " +
             ":username")
     fun findByUsername(username:String):CapitolUser?
+    /*
 
-    @Query("SELECT u FROM CapitolUser u")
+    @Query(value = "SELECT * FROM CapitolUser", nativeQuery= true)
     override fun findAll(): MutableList<CapitolUser>
+    */
+
 
 
 

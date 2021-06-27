@@ -43,7 +43,7 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
             .antMatchers("/api/user/**").authenticated()
 
             .antMatchers("/api/contact").permitAll()
-            .antMatchers("/api/user/create").permitAll()
+            //.antMatchers("/api/user/create").permitAll()
             .antMatchers("/api/user/exists").permitAll()
 
             .and()

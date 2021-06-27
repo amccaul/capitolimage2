@@ -15,25 +15,39 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
     var capitolUserRepository: CapitolUserRepository = _capitolUserRepository
 
 
+    //leave it alone, overrides method, use getCapitolUser(username) instead
     override fun loadUserByUsername(username: String): UserDetails? {
-        //var capitolUser: CapitolUser? =
         return capitolUserRepository.findByUsername(username)?.let { CapitolUserDetails(it) }
     }
 
+
+    /**
+     * @Returns CapitolUser object, null if not exists
+     */
+    fun getCapitolUser(username:String):CapitolUser? {
+       //capitolUserRepository.findByUsername( username )
+         return null;
+
+    }
     /**
      * @Returns false if username not found, true if username found
      */
+    //TODO figure out why this always returns false
     fun existsByUsername(username:String):Boolean {
-        return this.loadUserByUsername(username) != null
+        var variable = this.getCapitolUser(username)
+        if (variable == null)
+            return false
+        return true
     }
 
     /**
      * @Returns all capitolusers in database
      */
+    /* TODO figure out why this doesn't return anything, ever
     fun findAll():List<CapitolUser>{
         return capitolUserRepository.findAll()
     }
-
+*/
     private fun saveAll( capitolUser:List<CapitolUser>):List<CapitolUser>{
         return capitolUserRepository.saveAll(capitolUser)
     }
@@ -42,6 +56,8 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
         var listCapitolUser:List<CapitolUser> = listOf(capitolUser)
         return this.saveAll(listCapitolUser).get(0)
     }
+
+
 
 
 
