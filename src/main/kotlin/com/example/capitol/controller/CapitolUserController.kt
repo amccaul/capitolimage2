@@ -48,9 +48,11 @@ class CapitolUserController (
         return "saved"
     }
 
-    @GetMapping("/user/exists/")
-    fun exists(@RequestBody username: String):Boolean{
-        return capitolUserDetailsService.existsByUsername(username);
+    // @CrossOrigin(origins = arrayOf("http://localhost:4200"))
+    @CrossOrigin
+    @GetMapping("/user/exists/{username}")
+    fun exists(@PathVariable username: String):Boolean{
+        return !capitolUserDetailsService.existsByUsername(username);
     }
 /*
     //TODO get working
@@ -87,6 +89,7 @@ class CapitolUserController (
 */
 
     //Maybe should be post?  Idk.
+    @CrossOrigin
     @GetMapping("/user/account")
     fun account(): String {
         return "account-details works!"

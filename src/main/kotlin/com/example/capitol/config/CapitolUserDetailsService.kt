@@ -25,8 +25,8 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
      * @Returns CapitolUser object, null if not exists
      */
     fun getCapitolUser(username:String):CapitolUser? {
-       //capitolUserRepository.findByUsername( username )
-         return null;
+        return capitolUserRepository.findByUsername( username )
+
 
     }
     /**
@@ -34,10 +34,7 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
      */
     //TODO figure out why this always returns false
     fun existsByUsername(username:String):Boolean {
-        var variable = this.getCapitolUser(username)
-        if (variable == null)
-            return false
-        return true
+        return capitolUserRepository.existsByUsername(username)
     }
 
     /**

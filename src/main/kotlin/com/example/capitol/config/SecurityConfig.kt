@@ -1,6 +1,5 @@
 package com.example.capitol.config
 
-import com.example.capitol.config.CapitolUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,9 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.lang.Exception
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+
 
 @Configuration
 @EnableWebSecurity
@@ -33,18 +34,21 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
     override fun configure(web: WebSecurity) {
         web
             .ignoring()
-            .antMatchers( HttpMethod.GET,"/api/contact")
+            .antMatchers(HttpMethod.GET, "/api/contact")
     }
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
+            .cors()
+            .and()
             .authorizeRequests()
-            .antMatchers("/api/user/**").authenticated()
+            .antMatchers("/api/user/exists").permitAll()
+
+            .antMatchers("/api/user/**").permitAll()
 
             .antMatchers("/api/contact").permitAll()
             //.antMatchers("/api/user/create").permitAll()
-            .antMatchers("/api/user/exists").permitAll()
 
             .and()
             .csrf().disable()
@@ -59,20 +63,20 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
         //.antMatchers(HttpMethod.GET, "/api/contact").permitAll()
 */
         //http
-            //.cors()
-           // .and()
-            //.csrf().disable()
-          //  .authorizeRequests()
-            //.anyRequest().permitAll()
-            //.antMatchers("/api/contact").permitAll()
-            //.anyRequest().authenticated()
-            //.and()
-           // .formLogin().loginPage("/login.html").permitAll()
-            //.and()
-            //.logout().permitAll()
-            //.and()
-           // .exceptionHandling().accessDeniedPage("/accessdenied")
-           //.and()
+        //.cors()
+        // .and()
+        //.csrf().disable()
+        //  .authorizeRequests()
+        //.anyRequest().permitAll()
+        //.antMatchers("/api/contact").permitAll()
+        //.anyRequest().authenticated()
+        //.and()
+        // .formLogin().loginPage("/login.html").permitAll()
+        //.and()
+        //.logout().permitAll()
+        //.and()
+        // .exceptionHandling().accessDeniedPage("/accessdenied")
+        //.and()
         // .httpBasic()
     }
 
@@ -83,5 +87,7 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
         daoAuthenticationProvider.setUserDetailsService(capitolUserDetailsService)
         return daoAuthenticationProvider
     }
-
 }
+
+
+

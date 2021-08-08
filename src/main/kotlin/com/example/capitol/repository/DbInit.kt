@@ -24,7 +24,7 @@ class DbInit(var capitolUserRepository: CapitolUserRepository):CommandLineRunner
                 u.role="USER"
         capitolUserRepository.save(u)
 
-        var a:CapitolUser = CapitolUser(username="admin",
+        var a:CapitolUser = CapitolUser(username="admin@123.com",
             password = password)
             //passwordEncoder.encode("{noop}pass123"))
         a.role="ADMIN"
