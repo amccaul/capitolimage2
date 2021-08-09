@@ -27,14 +27,17 @@ class CapitolUserController (
 
     @PutMapping("/user/save")
     fun save(@RequestBody newUserViewModel: NewUserViewModel):String{
-        //check to see if passwords don't match
-        if ( newUserViewModel.password != newUserViewModel.matchingPassword )
+        //check passwords first cause it's cheaper
+        if ( newUserViewModel.password.compareTo(newUserViewModel.matchingPassword) != 0 )
             return "pwmismatch"
 
-        //check to see if password is invalid
+        //checks to see if password is 8-20 char
+        if (!newUserViewModel.password.matches("^{8,20}\$".toRegex()))
+            return "invalidPassword"
 
-        //TODO check to see if username invalid
-        //figure out how to do email regex using java constants
+        //massive nonsense regex that represents email
+        if (!newUserViewModel.username.matches("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex()))
+            return "invalidUsernameContents"
 
         //check to see if username exists
         //put this after the password/regex stuff because it requires an SQL call
@@ -49,7 +52,7 @@ class CapitolUserController (
     }
 
     // @CrossOrigin(origins = arrayOf("http://localhost:4200"))
-    @CrossOrigin
+    //@CrossOrigin
     @GetMapping("/user/exists/{username}")
     fun exists(@PathVariable username: String):Boolean{
         return !capitolUserDetailsService.existsByUsername(username);
@@ -89,7 +92,7 @@ class CapitolUserController (
 */
 
     //Maybe should be post?  Idk.
-    @CrossOrigin
+    //@CrossOrigin
     @GetMapping("/user/account")
     fun account(): String {
         return "account-details works!"
