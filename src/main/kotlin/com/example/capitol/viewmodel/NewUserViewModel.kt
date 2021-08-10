@@ -5,7 +5,7 @@ import javax.validation.constraints.Pattern
 
 //don't touch these elements!  It defines the API!
 data class NewUserViewModel (
-    var username:String,
+    var email:String,
     var password:String,
     var matchingPassword:String
 ){}

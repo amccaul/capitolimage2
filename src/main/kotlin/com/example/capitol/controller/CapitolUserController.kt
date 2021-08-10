@@ -9,13 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
 class CapitolUserController (
-    @Autowired var capitolUserDetailsService: CapitolUserDetailsService
+    @Autowired var capitolUserDetailsService: CapitolUserDetailsService,
+    @Autowired var passwordEncoder: PasswordEncoder
     ){
 
     /*
@@ -32,20 +34,25 @@ class CapitolUserController (
             return "pwmismatch"
 
         //checks to see if password is 8-20 char
-        if (!newUserViewModel.password.matches("^{8,20}\$".toRegex()))
+        //TODO get this regex working
+        /*if (newUserViewModel.password.matches("^{8,20}\$".toRegex()))
             return "invalidPassword"
-
+        */
         //massive nonsense regex that represents email
-        if (!newUserViewModel.username.matches("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex()))
+        //TODO get this regex working
+        /*
+        if (!newUserViewModel.email.matches("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex()))
             return "invalidUsernameContents"
+        */
+
 
         //check to see if username exists
         //put this after the password/regex stuff because it requires an SQL call
-        if ( capitolUserDetailsService.existsByUsername(newUserViewModel.username))
+        if ( capitolUserDetailsService.existsByUsername(newUserViewModel.email))
             return "exists"
 
-        var newCapitolUser:CapitolUser = CapitolUser(username = newUserViewModel.username,
-            password = newUserViewModel.password)
+        var newCapitolUser:CapitolUser = CapitolUser(username = newUserViewModel.email,
+            password = passwordEncoder.encode(newUserViewModel.password))
         capitolUserDetailsService.save(newCapitolUser)
 
         return "saved"
