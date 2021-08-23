@@ -37,19 +37,17 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
             .antMatchers(HttpMethod.GET, "/api/contact")
     }
 
+    //TODO update end point security
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
             .cors()
             .and()
             .authorizeRequests()
-            .antMatchers("/api/user/exists").permitAll()
-
-            .antMatchers("/api/user/**").permitAll()
-
-            .antMatchers("/api/contact").permitAll()
-            //.antMatchers("/api/user/create").permitAll()
-
+            .antMatchers(HttpMethod.GET,"/api/user/exists").permitAll()
+            .antMatchers(HttpMethod.PUT,"/api/user/save").permitAll()
+            .antMatchers(HttpMethod.POST,"/api/contact").permitAll()
+            .anyRequest().authenticated()
             .and()
             .csrf().disable()
             .httpBasic()
@@ -69,7 +67,7 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
         //  .authorizeRequests()
         //.anyRequest().permitAll()
         //.antMatchers("/api/contact").permitAll()
-        //.anyRequest().authenticated()
+        //czczzcz  d
         //.and()
         // .formLogin().loginPage("/login.html").permitAll()
         //.and()

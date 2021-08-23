@@ -40,11 +40,11 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
     /**
      * @Returns all capitolusers in database
      */
-    /* TODO figure out why this doesn't return anything, ever
+    //TODO figure out why this doesn't return anything, ever
     fun findAll():List<CapitolUser>{
         return capitolUserRepository.findAll()
     }
-*/
+
     private fun saveAll( capitolUser:List<CapitolUser>):List<CapitolUser>{
         return capitolUserRepository.saveAll(capitolUser)
     }

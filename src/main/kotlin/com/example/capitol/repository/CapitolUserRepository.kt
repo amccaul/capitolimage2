@@ -23,14 +23,9 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     fun existsByUsername(@Param("usernameinput") username:String):Boolean
 
     /*
-
     @Query(value = "SELECT * FROM CapitolUser", nativeQuery= true)
     override fun findAll(): MutableList<CapitolUser>
     */
-
-
-
-
 
     /*
     @Query("SELECT u FROM CapitolUser u WHERE u.email = " +
