@@ -1,6 +1,6 @@
 package com.example.capitol.viewmodel
 
 data class LoginViewModel (
-    var email:String,
+    var username:String,
     var password:String
     )

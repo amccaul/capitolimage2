@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service
 @Service
 //TODO delete this in production
 //@ComponentScan("com.example.capitol.config")
-class DbInit(var capitolUserRepository: CapitolUserRepository):CommandLineRunner {
-    @Autowired
-    lateinit var passwordEncoder:PasswordEncoder
-
+class DbInit(var capitolUserRepository: CapitolUserRepository,
+             @Autowired var passwordEncoder:PasswordEncoder
+             ):CommandLineRunner {
     override fun run(vararg args: String?) {
         capitolUserRepository.deleteAll()
 

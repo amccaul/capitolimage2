@@ -45,6 +45,7 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.GET,"/api/user/exists").permitAll()
+            .antMatchers(HttpMethod.POST,"/api/user/authenticate").permitAll()
             .antMatchers(HttpMethod.PUT,"/api/user/save").permitAll()
             .antMatchers(HttpMethod.POST,"/api/contact").permitAll()
             .anyRequest().authenticated()

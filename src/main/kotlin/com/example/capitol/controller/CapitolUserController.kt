@@ -3,6 +3,7 @@ package com.example.capitol.controller
 import com.example.capitol.config.CapitolUserDetailsService
 import com.example.capitol.entity.CapitolUser
 import com.example.capitol.repository.CapitolUserRepository
+import com.example.capitol.viewmodel.LoginViewModel
 import com.example.capitol.viewmodel.NewUserViewModel
 import com.example.capitol.viewmodel.PasswordMatchesValidator
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +24,7 @@ class CapitolUserController (
     ){
     @PutMapping("/user/save")
     @ResponseStatus(HttpStatus.CREATED)
-    fun save(@RequestBody newUserViewModel: NewUserViewModel):Boolean{
+    fun save(@RequestBody newUserViewModel: NewUserViewModel):String{
         //check passwords first cause it's cheaper
         if ( newUserViewModel.password.compareTo(newUserViewModel.matchingPassword) != 0 )
             throw ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -32,12 +33,15 @@ class CapitolUserController (
         //checks to see if password is 8-20 char
         //TODO get this regex working
         /*if (newUserViewModel.password.matches("^{8,20}\$".toRegex()))
-            return "invalidPassword"
+            throw ResponseStatusException(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                "Invalid password"
+            )
         */
         //massive nonsense regex that represents email
-        //TODO get this regex working
+        //if (!newUserViewModel.email.matches("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex())) {
 
-        if (!newUserViewModel.email.matches("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex())) {
+        if (!newUserViewModel.email.matches("^[A-Za-z0-9+_.-]+@(.+)\$".toRegex())) {
             throw ResponseStatusException(
                 HttpStatus.UNPROCESSABLE_ENTITY,
                 "Input is not an email"
@@ -45,6 +49,7 @@ class CapitolUserController (
         }
         //check to see if username exists
         //put this after the password/regex stuff because it requires an SQL call
+        //TODO figure out why this doesn't check emails after program start
         if ( capitolUserDetailsService.existsByUsername(newUserViewModel.email))
             throw ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -54,24 +59,29 @@ class CapitolUserController (
             password = passwordEncoder.encode(newUserViewModel.password))
         capitolUserDetailsService.save(newCapitolUser)
 
-        return true;
+        return "User account created";
     }
 
-    // @CrossOrigin(origins = arrayOf("http://localhost:4200"))
-    //@CrossOrigin
     @GetMapping("/user/exists/{username}")
     fun exists(@PathVariable username: String):Boolean{
         return !capitolUserDetailsService.existsByUsername(username);
     }
-/*
-    //TODO get working
-    @PostMapping("/user/login")
-    fun login(@RequestBody username: String, password:String):Boolean{
-        return capitolUserRepository.exists(username)
-        //capitolUserService.
-        //return true
+
+    /**
+     * @param Grabs username and password off request header
+     * @return true if authenticated, false if not
+     */
+    @GetMapping("/user/authenticate")
+    fun authenticate(@RequestHeader model:LoginViewModel):LoginViewModel? {
+        var cu: CapitolUser? = getCapitolUser(model.username)
+        return if (cu != null) {
+            if (passwordEncoder.matches(model.password, cu.password)){
+                LoginViewModel(model.username, cu.password)
+            } else null;
+        } else null;
+       //return capitolUserDetailsService.authenticate( model.username, password)
     }
-*/
+
 
 
     //TODO implement view all users functionality
@@ -104,13 +114,11 @@ class CapitolUserController (
 
     @GetMapping("/user/{username}")
     fun getCapitolUser(@PathVariable username: String): CapitolUser? {
-        if (!this.exists(username)){
-            throw ResponseStatusException(
+        var cu: CapitolUser? = capitolUserDetailsService.getCapitolUser(username)
+            ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                "user:" + username+" does not exist"
-            )
-        }
-        return capitolUserDetailsService.getCapitolUser(username)
+                "user:" + username+" does not exist")
+        return cu
     }
 
     /*

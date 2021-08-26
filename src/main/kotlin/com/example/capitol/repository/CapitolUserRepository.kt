@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
 
-    @Query("SELECT u FROM CapitolUser u WHERE u.username = " +
-            ":username")
-    fun findByUsername(@Param("username") username:String):CapitolUser?
+    @Query ("SELECT u from CapitolUser u WHERE lower(u.username) LIKE :usernameinput")
+    fun findByUsername(@Param("usernameinput") username:String):CapitolUser?
+
     /*
     @Query("select case when count(c)> 0 then true else false end from Car c where lower(c.model) like lower(:model)")
     boolean existsCarLikeCustomQuery(@Param("model") String model);
@@ -21,6 +21,11 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     @Query ("SELECT case WHEN COUNT(u)>0 THEN true ELSE false END " +
             "from CapitolUser u WHERE lower(u.username) LIKE :usernameinput")
     fun existsByUsername(@Param("usernameinput") username:String):Boolean
+
+
+    @Query ("SELECT case WHEN COUNT(u)>0 THEN true ELSE false END from CapitolUser u " +
+            "WHERE lower(u.username) LIKE :usernameinput AND u.password LIKE :passwordinput")
+    fun authenticate(@Param("usernameinput") username:String, @Param("passwordinput") password:String):Boolean
 
     /*
     @Query(value = "SELECT * FROM CapitolUser", nativeQuery= true)

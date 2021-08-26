@@ -26,16 +26,14 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
      */
     fun getCapitolUser(username:String):CapitolUser? {
         return capitolUserRepository.findByUsername( username )
-
-
     }
     /**
      * @Returns false if username not found, true if username found
      */
-    //TODO figure out why this always returns false
     fun existsByUsername(username:String):Boolean {
         return capitolUserRepository.existsByUsername(username)
     }
+
 
     /**
      * @Returns all capitolusers in database
