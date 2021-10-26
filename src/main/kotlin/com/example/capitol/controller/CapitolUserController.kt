@@ -2,25 +2,28 @@ package com.example.capitol.controller
 
 import com.example.capitol.config.CapitolUserDetailsService
 import com.example.capitol.entity.CapitolUser
-import com.example.capitol.repository.CapitolUserRepository
 import com.example.capitol.viewmodel.LoginViewModel
 import com.example.capitol.viewmodel.NewUserViewModel
-import com.example.capitol.viewmodel.PasswordMatchesValidator
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.server.ResponseStatusException
+import java.util.*
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
 class CapitolUserController (
     @Autowired var capitolUserDetailsService: CapitolUserDetailsService,
-    @Autowired var passwordEncoder: PasswordEncoder
+    @Autowired var passwordEncoder: PasswordEncoder,
+    @Autowired var authenticationManager: AuthenticationManager
     ){
     @PutMapping("/user/save")
     @ResponseStatus(HttpStatus.CREATED)
@@ -68,34 +71,26 @@ class CapitolUserController (
     }
 
     /**
-     * @param Grabs username and password off request header
+     * @param Grabs username and password off basic auth header
      * @return true if authenticated, false if not
      */
     @GetMapping("/user/authenticate")
-    fun authenticate(@RequestHeader model:LoginViewModel):LoginViewModel? {
-        var cu: CapitolUser? = getCapitolUser(model.username)
-        return if (cu != null) {
-            if (passwordEncoder.matches(model.password, cu.password)){
-                LoginViewModel(model.username, cu.password)
-            } else null;
-        } else null;
-       //return capitolUserDetailsService.authenticate( model.username, password)
+    fun authenticate(webRequest:NativeWebRequest):Boolean {
+        val creds = webRequest.getHeader(HttpHeaders.AUTHORIZATION)!!.substring("Basic".length).trim();
+
+        val decodedCreds = String(Base64.getDecoder().decode(creds)).split(":")
+        val authentication: Authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(decodedCreds[0], decodedCreds[1])
+        )
+        return authentication.isAuthenticated
     }
 
 
-
-    //TODO implement view all users functionality
-    @PostMapping("/user/getAllUsers")
-    fun getCapitolUser():String{
-        return "teststring"
-    }
-
-    /*
     @GetMapping("/user/getAllUsers")
     fun getCapitolUser():List<CapitolUser>{
         return capitolUserDetailsService.findAll()
     }
-    */
+
    /* TODO Get working
     @GetMapping("/user/getAllUsers")
     fun getCapitolUser():String{
@@ -108,17 +103,17 @@ class CapitolUserController (
     }
 */
     @GetMapping("/user/account")
-    fun account(): String {
-        return "account-details works!"
+    fun account(webRequest:NativeWebRequest): String {
+        return "Hello " + webRequest.getHeader(HttpHeaders.AUTHORIZATION)
     }
 
     @GetMapping("/user/{username}")
     fun getCapitolUser(@PathVariable username: String): CapitolUser? {
-        var cu: CapitolUser? = capitolUserDetailsService.getCapitolUser(username)
+        return capitolUserDetailsService.getCapitolUser(username)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "user:" + username+" does not exist")
-        return cu
+
     }
 
     /*

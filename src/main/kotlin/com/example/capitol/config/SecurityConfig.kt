@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -12,9 +13,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @Configuration
@@ -29,8 +27,11 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(authenticationProvider())
     }
-
-
+    @Bean
+    @Throws(java.lang.Exception::class)
+    override fun authenticationManagerBean(): AuthenticationManager? {
+        return super.authenticationManagerBean()
+    }
     override fun configure(web: WebSecurity) {
         web
             .ignoring()
@@ -48,35 +49,14 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
             .antMatchers(HttpMethod.POST,"/api/user/authenticate").permitAll()
             .antMatchers(HttpMethod.PUT,"/api/user/save").permitAll()
             .antMatchers(HttpMethod.POST,"/api/contact").permitAll()
+
+            //TODO delete this line
+            .antMatchers(HttpMethod.GET,"/api/user/getAllUsers").permitAll()
+
             .anyRequest().authenticated()
             .and()
-            .csrf().disable()
+            //.csrf().disable()
             .httpBasic()
-
-/*http
-            .authorizeRequests()
-            .antMatchers("/**").permitAll()
-            .and()
-            .csrf().disable()
-            .httpBasic()*/
-        //.antMatchers(HttpMethod.GET, "/api/contact").permitAll()
-*/
-        //http
-        //.cors()
-        // .and()
-        //.csrf().disable()
-        //  .authorizeRequests()
-        //.anyRequest().permitAll()
-        //.antMatchers("/api/contact").permitAll()
-        //czczzcz  d
-        //.and()
-        // .formLogin().loginPage("/login.html").permitAll()
-        //.and()
-        //.logout().permitAll()
-        //.and()
-        // .exceptionHandling().accessDeniedPage("/accessdenied")
-        //.and()
-        // .httpBasic()
     }
 
     @Bean
