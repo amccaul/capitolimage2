@@ -4,6 +4,7 @@ import com.example.capitol.config.CapitolUserDetailsService
 import com.example.capitol.entity.CapitolUser
 import com.example.capitol.viewmodel.LoginViewModel
 import com.example.capitol.viewmodel.NewUserViewModel
+import com.example.capitol.viewmodel.UserModel
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -75,14 +76,28 @@ class CapitolUserController (
      * @return true if authenticated, false if not
      */
     @GetMapping("/user/authenticate")
-    fun authenticate(webRequest:NativeWebRequest):Boolean {
+    fun authenticate(webRequest:NativeWebRequest): UserModel? {
         val creds = webRequest.getHeader(HttpHeaders.AUTHORIZATION)!!.substring("Basic".length).trim();
 
         val decodedCreds = String(Base64.getDecoder().decode(creds)).split(":")
         val authentication: Authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(decodedCreds[0], decodedCreds[1])
         )
-        return authentication.isAuthenticated
+        if(authentication.isAuthenticated){
+
+            var cu = capitolUserDetailsService.getCapitolUser(decodedCreds[0])
+
+            var user:UserModel = UserModel(
+                cu!!.userId,
+                cu.username,
+                cu.role,
+                cu.created,
+                cu.updated,
+                creds)
+            return user;
+
+        } else return null;
+
     }
 
 
@@ -112,7 +127,7 @@ class CapitolUserController (
         return capitolUserDetailsService.getCapitolUser(username)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                "user:" + username+" does not exist")
+                "user: " + username+" does not exist")
 
     }
 
