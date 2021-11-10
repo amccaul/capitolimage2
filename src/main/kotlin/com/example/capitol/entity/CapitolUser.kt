@@ -27,7 +27,7 @@ data class CapitolUser (
     var created:LocalDateTime= LocalDateTime.now(),
 
     @Column
-    var role:String="",
+    var role:String="USER",
 
     @Column
     var enabled:Boolean = true,

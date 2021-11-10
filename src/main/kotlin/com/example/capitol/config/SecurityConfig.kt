@@ -38,24 +38,19 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
             .antMatchers(HttpMethod.GET, "/api/contact")
     }
 
-    //TODO update end point security
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
             .cors()
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET,"/api/user/exists").permitAll()
-            .antMatchers(HttpMethod.POST,"/api/user/authenticate").permitAll()
-            .antMatchers(HttpMethod.PUT,"/api/user/save").permitAll()
-            .antMatchers(HttpMethod.POST,"/api/contact").permitAll()
-
-            //TODO delete this line
-            .antMatchers(HttpMethod.GET,"/api/user/getAllUsers").permitAll()
-
+            .antMatchers("/api/public/**").permitAll()
+            .antMatchers("/api/user/**").authenticated()
+            .antMatchers("/api/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
-            //.csrf().disable()
+                //TODO figure out a better way of CSRF
+            .csrf().disable()
             .httpBasic()
     }
 

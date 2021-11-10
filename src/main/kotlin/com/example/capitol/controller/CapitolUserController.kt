@@ -26,7 +26,7 @@ class CapitolUserController (
     @Autowired var passwordEncoder: PasswordEncoder,
     @Autowired var authenticationManager: AuthenticationManager
     ){
-    @PutMapping("/user/save")
+    @PostMapping("/public/save")
     @ResponseStatus(HttpStatus.CREATED)
     fun save(@RequestBody newUserViewModel: NewUserViewModel):String{
         //check passwords first cause it's cheaper
@@ -35,7 +35,7 @@ class CapitolUserController (
                 "Password mismatch")
 
         //checks to see if password is 8-20 char
-        //TODO get this regex working
+        // TODO get this regex working
         /*if (newUserViewModel.password.matches("^{8,20}\$".toRegex()))
             throw ResponseStatusException(
                 HttpStatus.UNPROCESSABLE_ENTITY,
@@ -66,15 +66,20 @@ class CapitolUserController (
         return "User account created";
     }
 
-    @GetMapping("/user/exists/{username}")
+    /**
+     * @Param username string in path
+     * @Return true if exists
+     */
+    @GetMapping("/public/exists/{username}")
     fun exists(@PathVariable username: String):Boolean{
-        return !capitolUserDetailsService.existsByUsername(username);
+        return capitolUserDetailsService.existsByUsername(username);
     }
 
     /**
-     * @param Grabs username and password off basic auth header
+     * @param Authorization header username and password
      * @return true if authenticated, false if not
      */
+    // TODO add appropriate error codes, if any applicable
     @GetMapping("/user/authenticate")
     fun authenticate(webRequest:NativeWebRequest): UserModel? {
         val creds = webRequest.getHeader(HttpHeaders.AUTHORIZATION)!!.substring("Basic".length).trim();
@@ -101,26 +106,44 @@ class CapitolUserController (
     }
 
 
-    @GetMapping("/user/getAllUsers")
+    @GetMapping("/admin/getAllUsers")
     fun getCapitolUser():List<CapitolUser>{
         return capitolUserDetailsService.findAll()
     }
-
-   /* TODO Get working
-    @GetMapping("/user/getAllUsers")
-    fun getCapitolUser():String{
-        var list = capitolUserDetailsService.findAll()
-        var output:String = ""
-        for ( l in list){
-            output += l.toString()
-        }
-        return output;
+    @DeleteMapping("admin/delete/{userId}")
+    fun deleteCapitolUser(@PathVariable userId : Int):Boolean{
+        if ( !capitolUserDetailsService.existsByUserId(userId) )
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,
+                "userId: " + userId+" does not exist")
+        return capitolUserDetailsService.delete(userId)
     }
-*/
+
+    @DeleteMapping("/user/delete/")
+    fun deleteCapitolUser(@PathVariable userId: Int, webRequest: NativeWebRequest):Boolean{
+        var user : CapitolUser? = capitolUserDetailsService.getCapitolUser(userId);
+
+        if (user==null){
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,
+                "userId: " + userId+" does not exist") ;}
+        //checks to see if user is authorised to delete that user
+        var usermodel = authenticate(webRequest);
+        if (usermodel != null){
+            //only the user can delete their own account using this function
+            if (usermodel.userId == userId){
+                return capitolUserDetailsService.delete(usermodel.userId)
+            }
+        }
+        return false;
+    }
+
+/*
+
     @GetMapping("/user/account")
     fun account(webRequest:NativeWebRequest): String {
         return "Hello " + webRequest.getHeader(HttpHeaders.AUTHORIZATION)
     }
+*/
+
 
     @GetMapping("/user/{username}")
     fun getCapitolUser(@PathVariable username: String): CapitolUser? {

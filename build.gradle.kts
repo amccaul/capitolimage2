@@ -36,8 +36,9 @@ dependencies {
     //implementation ("org.springframework.security:spring-security-config:5.4.2")
     //use this isntead
     implementation("org.springframework.boot:spring-boot-starter-security:2.4.2")
+    implementation("junit:junit:4.13.1")
 
-
+    testImplementation ("org.junit.jupiter:junit-jupiter:5.6.0")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -64,3 +65,4 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+

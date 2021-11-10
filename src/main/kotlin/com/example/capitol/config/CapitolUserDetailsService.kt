@@ -28,10 +28,19 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
         return capitolUserRepository.findByUsername( username )
     }
     /**
+     * @Returns CapitolUser object, null if not exists
+     */
+    fun getCapitolUser(userId: Int):CapitolUser? {
+        return capitolUserRepository.findByUserId(userId);
+    }
+    /**
      * @Returns false if username not found, true if username found
      */
     fun existsByUsername(username:String):Boolean {
         return capitolUserRepository.existsByUsername(username)
+    }
+    fun existsByUserId(userId:Int):Boolean {
+        return capitolUserRepository.existsById(userId)
     }
 
 
@@ -52,10 +61,16 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
         return this.saveAll(listCapitolUser).get(0)
     }
 
-
-
-
-
+    fun delete (capitolUser: CapitolUser): Boolean {
+        if (capitolUserRepository.deleteByUserID(capitolUser.userId)>0)
+            return true
+        return false
+    }
+    fun delete (userId: Int ): Boolean {
+        if (capitolUserRepository.deleteByUserID(userId)>0)
+            return true
+        return false
+    }
 
 
 }

@@ -16,3 +16,10 @@ CREATE TABLE capitolUser (
 	permissions VARCHAR
 	
 );
+
+DROP TABLE IF EXISTS images;
+CREATE TABLE images (
+    User_ID INTEGER PRIMARY KEY,
+    url VARCHAR NOT NULL,
+    uploaded TIMESTAMP NOT NULL,
+)

@@ -13,7 +13,11 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     @Query ("SELECT u from CapitolUser u WHERE lower(u.username) LIKE :usernameinput")
     fun findByUsername(@Param("usernameinput") username:String):CapitolUser?
 
+    @Query ("SELECT u from CapitolUser u WHERE u.userId = :useridinput")
+    fun findByUserId(@Param("useridinput") userIdInput: Int):CapitolUser?
+
     /*
+
     @Query("select case when count(c)> 0 then true else false end from Car c where lower(c.model) like lower(:model)")
     boolean existsCarLikeCustomQuery(@Param("model") String model);
     */
@@ -36,10 +40,10 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     @Query("SELECT u FROM CapitolUser u WHERE u.email = " +
             ":email")
     fun findByEmail(email:String):CapitolUser
+*/
 
     @Query("DELETE FROM CapitolUser u WHERE u.userId = " +
             ":userId")
-    fun deleteByUserID(userId:Int):CapitolUser
-    `*/
+    fun deleteByUserID(userId:Int): Integer
 
 }

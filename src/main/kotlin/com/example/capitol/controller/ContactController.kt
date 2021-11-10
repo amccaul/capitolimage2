@@ -17,7 +17,7 @@ class ContactController (
         ){
 
 
-    @PostMapping("/contact")
+    @PostMapping("/public/contact")
             /**
              * @throws ResponseStatusException error 422 if email not valid email
              */
@@ -29,10 +29,6 @@ class ContactController (
                 "Input is not an email")
        }
 
-       /*
-       xif (bindingResult.hasErrors()){
-            return "Binding result has errors"}
-            */
         this.contactSender.sendContact(
             contactViewModel.email,
             contactViewModel.name,
