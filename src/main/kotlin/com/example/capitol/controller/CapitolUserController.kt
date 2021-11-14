@@ -20,7 +20,8 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = ["http://localhost:4200"], allowedHeaders = ["*"])
+//@CrossOrigin(origins = ["*"])
 class CapitolUserController (
     @Autowired var capitolUserDetailsService: CapitolUserDetailsService,
     @Autowired var passwordEncoder: PasswordEncoder,
@@ -33,17 +34,6 @@ class CapitolUserController (
         if ( newUserViewModel.password.compareTo(newUserViewModel.matchingPassword) != 0 )
             throw ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Password mismatch")
-
-        //checks to see if password is 8-20 char
-        // TODO get this regex working
-        /*if (newUserViewModel.password.matches("^{8,20}\$".toRegex()))
-            throw ResponseStatusException(
-                HttpStatus.UNPROCESSABLE_ENTITY,
-                "Invalid password"
-            )
-        */
-        //massive nonsense regex that represents email
-        //if (!newUserViewModel.email.matches("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])".toRegex())) {
 
         if (!newUserViewModel.email.matches("^[A-Za-z0-9+_.-]+@(.+)\$".toRegex())) {
             throw ResponseStatusException(
@@ -80,6 +70,7 @@ class CapitolUserController (
      * @return true if authenticated, false if not
      */
     // TODO add appropriate error codes, if any applicable
+    @CrossOrigin(origins = ["http://localhost:4200"], allowedHeaders = ["*"])
     @GetMapping("/user/authenticate")
     fun authenticate(webRequest:NativeWebRequest): UserModel? {
         val creds = webRequest.getHeader(HttpHeaders.AUTHORIZATION)!!.substring("Basic".length).trim();
@@ -104,20 +95,14 @@ class CapitolUserController (
         } else return null;
 
     }
+    @GetMapping("/user/{username}")
+    fun getCapitolUser(@PathVariable username: String): CapitolUser? {
+        return capitolUserDetailsService.getCapitolUser(username)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "user: " + username+" does not exist")
 
-
-    @GetMapping("/admin/getAllUsers")
-    fun getCapitolUser():List<CapitolUser>{
-        return capitolUserDetailsService.findAll()
     }
-    @DeleteMapping("admin/delete/{userId}")
-    fun deleteCapitolUser(@PathVariable userId : Int):Boolean{
-        if ( !capitolUserDetailsService.existsByUserId(userId) )
-            throw ResponseStatusException(HttpStatus.NOT_FOUND,
-                "userId: " + userId+" does not exist")
-        return capitolUserDetailsService.delete(userId)
-    }
-
     @DeleteMapping("/user/delete/")
     fun deleteCapitolUser(@PathVariable userId: Int, webRequest: NativeWebRequest):Boolean{
         var user : CapitolUser? = capitolUserDetailsService.getCapitolUser(userId);
@@ -136,31 +121,18 @@ class CapitolUserController (
         return false;
     }
 
-/*
-
-    @GetMapping("/user/account")
-    fun account(webRequest:NativeWebRequest): String {
-        return "Hello " + webRequest.getHeader(HttpHeaders.AUTHORIZATION)
+    @GetMapping("/admin/getAllUsers")
+    fun getCapitolUser():List<CapitolUser>{
+        return capitolUserDetailsService.findAll()
     }
-*/
-
-
-    @GetMapping("/user/{username}")
-    fun getCapitolUser(@PathVariable username: String): CapitolUser? {
-        return capitolUserDetailsService.getCapitolUser(username)
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "user: " + username+" does not exist")
-
+    @DeleteMapping("/admin/delete/{userId}")
+    fun deleteCapitolUser(@PathVariable userId : Int):Boolean{
+        if ( !capitolUserDetailsService.existsByUserId(userId) )
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,
+                "userId: " + userId+" does not exist")
+        return capitolUserDetailsService.delete(userId)
     }
 
-    /*
-
-    fun deleteByUserID(@PathVariable userId :Int):String{
-        capitolUserRepository.delete(userId)
-        return "deleted"
-    }
-    */
 
 
 

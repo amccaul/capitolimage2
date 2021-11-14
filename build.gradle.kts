@@ -4,9 +4,12 @@ plugins {
     id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     war
-    kotlin("jvm") version "1.4.21"
+    //kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.4.21"
     kotlin("plugin.jpa") version "1.4.21"
+
+    kotlin("plugin.serialization") version "1.5.31"
 }
 
 group = "com.example"
@@ -38,7 +41,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security:2.4.2")
     implementation("junit:junit:4.13.1")
 
-    testImplementation ("org.junit.jupiter:junit-jupiter:5.6.0")
+
+    //There should be json parsing/gson built into spring framework now?  Maybe?
+    //implementation("com.google.code.gson:gson:2.7")
+    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    implementation ("com.google.code.gson:gson:2.8.5")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -51,7 +58,12 @@ dependencies {
 
 
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test:5.5.3")
+    testImplementation ("org.junit.jupiter:junit-jupiter:5.6.0")
+
 
 }
 

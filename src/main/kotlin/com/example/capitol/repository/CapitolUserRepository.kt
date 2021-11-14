@@ -44,6 +44,6 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
 
     @Query("DELETE FROM CapitolUser u WHERE u.userId = " +
             ":userId")
-    fun deleteByUserID(userId:Int): Integer
+    fun deleteByUserID(userId:Int): Int
 
 }

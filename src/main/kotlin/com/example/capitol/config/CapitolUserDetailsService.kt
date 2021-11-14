@@ -2,13 +2,12 @@ package com.example.capitol.config
 
 import com.example.capitol.entity.CapitolUser
 import com.example.capitol.repository.CapitolUserRepository
-import net.bytebuddy.implementation.bytecode.assign.TypeCasting
-import org.springframework.context.annotation.Bean
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+
 
 @Service
 class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): UserDetailsService {
@@ -43,7 +42,13 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
         return capitolUserRepository.existsById(userId)
     }
 
-
+    private fun getGrantedAuthorities(privileges: List<String>): List<GrantedAuthority>? {
+        val authorities: MutableList<GrantedAuthority> = ArrayList()
+        for (privilege in privileges) {
+            authorities.add(SimpleGrantedAuthority(privilege))
+        }
+        return authorities
+    }
     /**
      * @Returns all capitolusers in database
      */

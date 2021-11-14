@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 //@Constraint(validatedBy = PasswordMatchesValidator::class)
 
 @Retention(AnnotationRetention.RUNTIME)
-@Documented
+@MustBeDocumented
 annotation class PasswordMatches(
     val message: String = "Passwords don't match",
     val groups: Array<KClass<*>> = [],
