@@ -1,7 +1,5 @@
 package com.example.capitol.mail
 
-import com.example.capitol.entity.Contact
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSenderImpl

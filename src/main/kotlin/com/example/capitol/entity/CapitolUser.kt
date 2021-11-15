@@ -1,6 +1,5 @@
 package com.example.capitol.entity
 
-import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -13,6 +12,10 @@ data class CapitolUser (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //it needs to be -1 then it will be replaced automatically by the generated value strategy
     var userId:Int=-1,
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL])
+    private var capitolImages : Set<CapitolImage>,
 
     @Column(nullable=false, unique = true)
     var username:String,
