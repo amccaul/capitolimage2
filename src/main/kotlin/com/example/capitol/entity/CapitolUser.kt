@@ -4,24 +4,25 @@ import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
-@Table(name="capitoluser")
+@Table(name="capitoluser", schema = "public")
 @Entity (name = "CapitolUser")
 data class CapitolUser (
     @Id
-    @Column(updatable = false, name="userId")
+    @Column(updatable = false, name="user_Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //it needs to be -1 then it will be replaced automatically by the generated value strategy
-    var userId:Int=-1,
-
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
-        cascade = [CascadeType.ALL])
-    private var capitolImages : Set<CapitolImage>,
+    var user_Id:Int=-1,
 
     @Column(nullable=false, unique = true)
     var username:String,
 
     @Column(nullable=false)
     var password:String,
+
+    @OneToMany(targetEntity = CapitolImage::class, mappedBy = "image_Id",
+        // fetch = FetchType.LAZY, cascade = [CascadeType.ALL]
+         )
+    private var capitolImage : Set<CapitolImage> = setOf<CapitolImage>(),
 
     @Column(nullable=false)
     var updated:LocalDateTime = LocalDateTime.now(),
@@ -47,7 +48,7 @@ data class CapitolUser (
     @Column
     var permissions:String = "",
 
-){
+    ){
 
     fun getRoleList(): List<String> {
         return if (role.length > 0) {

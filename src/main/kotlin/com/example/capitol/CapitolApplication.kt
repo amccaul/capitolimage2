@@ -12,12 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @SpringBootApplication
-@ComponentScan("com.example.capitol.config",
-   "com.example.capitol.controller",
-   "com.example.capitol.entity",
-   "com.example.capitol.mail",
-   "com.example.capitol.repository",
-   "com.example.capitol.viewmodel")
 class CapitolApplication
 
 

@@ -17,9 +17,17 @@ CREATE TABLE capitolUser (
 	
 );
 
-DROP TABLE IF EXISTS images;
-CREATE TABLE images (
-    User_ID INTEGER PRIMARY KEY,
-    url VARCHAR NOT NULL,
-    uploaded TIMESTAMP NOT NULL,
+DROP TABLE IF EXISTS capitolImage	;
+CREATE TABLE capitolImage (
+                               User_ID INTEGER,
+                               Image_Id SERIAL PRIMARY KEY,
+                               image_name VARCHAR NOT NULL,
+                               url VARCHAR NOT NULL,
+                               thumbnailurl VARCHAR,
+                               name VARCHAR,
+                               uploaded TIMESTAMP NOT NULL,
+                               updated TIMESTAMP NOT NULL,
+                               CONSTRAINT fk_capitoluserid
+                                   FOREIGN KEY (User_ID)
+                                       REFERENCES capitoluser(user_id)
 )

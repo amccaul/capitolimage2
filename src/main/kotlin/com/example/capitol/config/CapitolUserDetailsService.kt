@@ -67,7 +67,7 @@ class CapitolUserDetailsService (_capitolUserRepository:CapitolUserRepository): 
     }
 
     fun delete (capitolUser: CapitolUser): Boolean {
-        if (capitolUserRepository.deleteByUserID(capitolUser.userId)>0)
+        if (capitolUserRepository.deleteByUserID(capitolUser.user_Id)>0)
             return true
         return false
     }

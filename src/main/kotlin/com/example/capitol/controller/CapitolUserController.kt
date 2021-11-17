@@ -84,7 +84,7 @@ class CapitolUserController (
             var cu = capitolUserDetailsService.getCapitolUser(decodedCreds[0])
 
             var user:UserModel = UserModel(
-                cu!!.userId,
+                cu!!.user_Id,
                 cu.username,
                 cu.role,
                 cu.created,

@@ -12,7 +12,7 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     @Query ("SELECT u from CapitolUser u WHERE lower(u.username) LIKE :usernameinput")
     fun findByUsername(@Param("usernameinput") username:String):CapitolUser?
 
-    @Query ("SELECT u from CapitolUser u WHERE u.userId = :useridinput")
+    @Query ("SELECT u from CapitolUser u WHERE (u.user_Id) = :useridinput")
     fun findByUserId(@Param("useridinput") userIdInput: Int):CapitolUser?
 
     /*
@@ -25,10 +25,12 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
             "from CapitolUser u WHERE lower(u.username) LIKE :usernameinput")
     fun existsByUsername(@Param("usernameinput") username:String):Boolean
 
+/*
 
     @Query ("SELECT case WHEN COUNT(u)>0 THEN true ELSE false END from CapitolUser u " +
             "WHERE lower(u.username) LIKE :usernameinput AND u.password LIKE :passwordinput")
     fun authenticate(@Param("usernameinput") username:String, @Param("passwordinput") password:String):Boolean
+*/
 
     /*
     @Query(value = "SELECT * FROM CapitolUser", nativeQuery= true)
@@ -41,7 +43,8 @@ interface CapitolUserRepository : JpaRepository<CapitolUser, Int> {
     fun findByEmail(email:String):CapitolUser
 */
 
-    @Query("DELETE FROM CapitolUser u WHERE u.userId = " +
+    @Query(
+        "DELETE FROM CapitolUser u WHERE u.user_Id = " +
             ":userId")
     fun deleteByUserID(userId:Int): Int
 
