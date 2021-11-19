@@ -3,8 +3,10 @@ package com.example.capitol.service
 import com.example.capitol.config.CapitolUserDetailsService
 import com.example.capitol.entity.CapitolImage
 import com.example.capitol.entity.CapitolUser
+import com.example.capitol.file.FileManagement
 import com.example.capitol.repository.CapitolImageRepository
 import com.example.capitol.repository.CapitolUserRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -17,26 +19,18 @@ import java.util.stream.Stream
 
 @Service
 class CapitolImageService (
-        _capitolImageRepository: CapitolImageRepository
+        var capitolImageRepository: CapitolImageRepository,
+        var fileManagement: FileManagement
         ){
-    var capitolImageRepository : CapitolImageRepository = _capitolImageRepository
-
-    //TODO figure out how to get this from application.properties
-    var ROOT_PATH = "C:\\Users\\Alec\\Pictures\\output"
-
+    //var capitolImageRepository : CapitolImageRepository = _capitolImageRepository
+    //var fileManagement : FileManagement = _fileManagement
     fun init(){
 
     }
     fun store(file: MultipartFile, capitolUser: CapitolUser){
-        //TODO remove this and replace with error check
-        /*if (!File(ROOT_PATH).isFile)
-            File(ROOT_PATH).createNewFile()
-        if (!File(ROOT_PATH+capitolUser.username).isFile)
-            File(ROOT_PATH+capitolUser.username).createNewFile()*/
-        var url:String =  ROOT_PATH + capitolUser.username + "/" + file.originalFilename
-        //var url =  "C:\\Users\\Alec\\Pictures\\output\\chad.jpg"
-        File( url ).createNewFile()
-        file.transferTo(File(url))
+        //TODO error check
+        var url =  fileManagement.store(file, capitolUser)
+
         var capitolImage = CapitolImage(
             capitolUser = capitolUser,
             image_name = file.originalFilename.toString(),
@@ -57,16 +51,19 @@ class CapitolImageService (
         var listCapitolUser:List<CapitolUser> = listOf(capitolUser)
         return this.saveAll(listCapitolUser).get(0)
     }*/
-    fun loadAll(): Stream<Path?>?{
+    fun load(): Stream<Path?>?{
         return null;
     }
-    fun load(filename: String?): Path?{
-        return null;
+    fun loadAll(capitolImages: Set<CapitolImage>) {
+        for (capitolImage in capitolImages) {
+            fileManagement.load(capitolImage.url)
+        }
     }
+
     fun loadAsResource(filename: String?): Resource?{
         return null;
     }
     fun deleteAll(){
-
     }
 }
+

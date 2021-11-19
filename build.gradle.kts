@@ -41,13 +41,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security:2.4.2")
     implementation("junit:junit:4.13.1")
 
-
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
+    //implementation("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
+    annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor")
     //There should be json parsing/gson built into spring framework now?  Maybe?
     //implementation("com.google.code.gson:gson:2.7")
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
     implementation ("com.google.code.gson:gson:2.8.5")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
 
     /* Database driver */
     runtimeOnly("org.postgresql:postgresql")

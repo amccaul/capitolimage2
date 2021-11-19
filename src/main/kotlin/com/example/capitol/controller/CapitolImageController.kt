@@ -19,18 +19,16 @@ import java.util.stream.Collectors
 @RestController
 @RequestMapping("/api/user/images")
 @CrossOrigin(origins = ["http://localhost:4200"], allowedHeaders = ["*"])
-class CapitolImageController (@Autowired _capitolImageService: CapitolImageService) {
-    val capitolImageService :CapitolImageService = _capitolImageService
-
+class CapitolImageController (var capitolImageService: CapitolImageService) {
     @PostMapping("/upload")
-    fun handleFileUpload(@RequestParam("file") file: MultipartFile): String {
+    fun handleFileUpload(@RequestParam file: MultipartFile): String {
         //TODO figure out a better way of getting better username
         val principal = SecurityContextHolder.getContext().authentication.principal
         if (principal is CapitolUserDetails) {
             capitolImageService.store(file, principal.capitolUser)
         }
         return "";}
-        //TODO figure out what this shit means
+        //TODO figure out what this stuff means
         /*
     redirectAttributes.addFlashAttribute(
         "message",

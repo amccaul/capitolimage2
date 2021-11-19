@@ -28,7 +28,7 @@ internal class CapitolImageServiceTest {
 
     lateinit var exampleImage : MultipartFile
     var cu : CapitolUser = CapitolUser( user_Id = 1, username = "TestImages", password = "123")
-    var ci : CapitolImage = CapitolImage(capitolUser = cu)
+    var ci : CapitolImage = CapitolImage(capitolUser = cu, url = "C:\\Users\\Alec\\Pictures\\test\\chad.jpg")
     @BeforeEach
     fun setupAll(){
         //load multipart exampleImage file from disk
