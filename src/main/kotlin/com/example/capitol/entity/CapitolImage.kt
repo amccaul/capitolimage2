@@ -18,8 +18,8 @@ data class CapitolImage (
     @Column
     var image_name : String = "",
 
-    @Column(nullable=false)
-    var url: String,
+    @Column
+    var url:  String = "",
 
     @Column
     var thumbnailurl: String = "",

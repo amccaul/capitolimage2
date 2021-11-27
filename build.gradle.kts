@@ -34,6 +34,8 @@ dependencies {
     //implementation ("org.springframework.security:spring-security-crypto:5.4.2")
     implementation ("javax.validation:validation-api:2.0.1.Final")
     implementation("org.springframework.security.oauth:spring-security-oauth2:2.5.0.RELEASE")
+// https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation("commons-io:commons-io:2.11.0")
 
     //doesnt work for some reason
     //implementation ("org.springframework.security:spring-security-config:5.4.2")
@@ -48,6 +50,10 @@ dependencies {
     //implementation("com.google.code.gson:gson:2.7")
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
     implementation ("com.google.code.gson:gson:2.8.5")
+
+    //Library to read image data
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-imaging
+    implementation("org.apache.commons:commons-imaging:1.0-alpha2")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -66,6 +72,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test:5.5.3")
     testImplementation ("org.junit.jupiter:junit-jupiter:5.6.0")
+
+// https://mvnrepository.com/artifact/org.springframework/spring-mock
+    //testImplementation("org.springframework:spring-mock:2.0.8")
+    implementation("org.springframework:spring-mock:2.0.8")
+
+
 
 
 }

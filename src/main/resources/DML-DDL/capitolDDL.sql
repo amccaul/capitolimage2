@@ -22,9 +22,8 @@ CREATE TABLE capitolImage (
                                User_ID INTEGER,
                                Image_Id SERIAL PRIMARY KEY,
                                image_name VARCHAR NOT NULL,
-                               url VARCHAR NOT NULL,
+                               url SERIAL,
                                thumbnailurl VARCHAR,
-                               name VARCHAR,
                                uploaded TIMESTAMP NOT NULL,
                                updated TIMESTAMP NOT NULL,
                                CONSTRAINT fk_capitoluserid

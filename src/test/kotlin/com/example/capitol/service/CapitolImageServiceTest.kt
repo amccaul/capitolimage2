@@ -3,6 +3,7 @@ package com.example.capitol.service
 import com.example.capitol.config.CapitolUserDetailsService
 import com.example.capitol.entity.CapitolImage
 import com.example.capitol.entity.CapitolUser
+import com.example.capitol.file.FileEnvConfig
 import com.example.capitol.repository.CapitolImageRepository
 import com.example.capitol.repository.CapitolUserRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -17,10 +18,10 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.File
 
 
-internal class CapitolImageServiceTest {
+internal class CapitolImageServiceTest (var fileEnvConfig: FileEnvConfig) {
 
     var capitolImageRepository:CapitolImageRepository = Mockito.mock(CapitolImageRepository::class.java)
-    var capitolImageService:CapitolImageService = CapitolImageService(capitolImageRepository)
+    var capitolImageService:CapitolImageService = CapitolImageService(capitolImageRepository, fileEnvConfig)
 
     var capitolUserRepository:CapitolUserRepository = Mockito.mock(CapitolUserRepository::class.java)
 
