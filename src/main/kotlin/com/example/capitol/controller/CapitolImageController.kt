@@ -3,11 +3,15 @@ package com.example.capitol.controller
 import com.example.capitol.config.CapitolUserDetails
 import com.example.capitol.entity.CapitolImage
 import com.example.capitol.service.CapitolImageService
+import com.example.capitol.viewmodel.DetailsViewModel
 import com.example.capitol.viewmodel.ThumbnailViewModel
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
@@ -16,7 +20,11 @@ import java.io.IOException
 @RestController
 @RequestMapping("/api/user/images")
 @CrossOrigin(origins = ["http://localhost:4200"], allowedHeaders = ["*"])
-class CapitolImageController (var capitolImageService: CapitolImageService) {
+class CapitolImageController (
+    @Autowired var capitolImageService: CapitolImageService,
+    @Autowired var passwordEncoder: PasswordEncoder,
+    @Autowired var authenticationManager: AuthenticationManager
+) {
     /*
     @PostMapping("/upload")
     fun handleFileUpload(@RequestParam file: MultipartFile): String {
@@ -26,6 +34,18 @@ class CapitolImageController (var capitolImageService: CapitolImageService) {
         }
         return "";}
         */
+   /* @ResponseBody
+    @RequestMapping(
+        path = ["fileupload"],
+        method = [RequestMethod.POST],
+        consumes = [MediaType.APPLICATION_OCTET_STREAM_VALUE]
+    )
+    @Throws(
+        IOException::class
+    )
+    open fun fileUpload(request: HttpServletRequest) {
+        Files.copy(request.inputStream, Paths.get("myfilename"))
+    }*/
 
     @PostMapping("/upload")
     fun handleFileUpload(@RequestParam files: Array<MultipartFile>): String {
@@ -89,12 +109,13 @@ class CapitolImageController (var capitolImageService: CapitolImageService) {
         return null
     }
 
-   @GetMapping("/get/{imageName}")
-    fun getImage( @PathVariable imageName : String ): ResponseEntity<ByteArray> {
-       val principal = SecurityContextHolder.getContext().authentication.principal
-       var capitolImage : CapitolImage? = null
-       if (principal is CapitolUserDetails) {
-           capitolImage = capitolImageService.getCapitolImageByImageName(principal.capitolUser, imageName)
+   @GetMapping("/get/{image_Id}")
+    fun getImage( @PathVariable image_Id: String ): ResponseEntity<ByteArray> {
+       var capitolImage: CapitolImage?
+       try {
+            capitolImage = capitolImageService.getCapitolImage(Integer.parseInt(image_Id))
+       } catch( exception:NumberFormatException){
+           return ResponseEntity<ByteArray>(HttpStatus.NOT_FOUND)
        }
        if (capitolImage == null){
            return ResponseEntity<ByteArray>(HttpStatus.NOT_FOUND)
@@ -107,6 +128,23 @@ class CapitolImageController (var capitolImageService: CapitolImageService) {
             .body(bytes)
 
     }
+    @GetMapping("/details/{image_Id}")
+    fun getImageDetails( @PathVariable image_Id : String ): ResponseEntity<DetailsViewModel> {
+
+        var capitolImage : CapitolImage? = null
+        try {
+            capitolImage = capitolImageService.getCapitolImage(Integer.parseInt(image_Id))
+        } catch( exception:NumberFormatException){
+            return ResponseEntity<DetailsViewModel>(HttpStatus.NOT_FOUND)
+        }
+        if (capitolImage == null){
+            return ResponseEntity<DetailsViewModel>(HttpStatus.NOT_FOUND)
+        }
+        return ResponseEntity
+            .ok()
+            .body(capitolImageService.loadDetails(capitolImage!!))
+    }
+
 /*
     @GetMapping("/files/{filename:.+}")
     @ResponseBody

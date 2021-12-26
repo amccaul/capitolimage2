@@ -18,6 +18,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
+
 }
 
 dependencies {
@@ -77,7 +78,10 @@ dependencies {
     //testImplementation("org.springframework:spring-mock:2.0.8")
     implementation("org.springframework:spring-mock:2.0.8")
 
-
+    implementation("com.drewnoakes:metadata-extractor:2.16.0")
+    //can't get this working for some reason, dependency won't resolve
+    // https://mvnrepository.com/artifact/com.github.downgoon/marvin
+    //    implementation("com.github.downgoon:marvin:1.5.5")
 
 
 }

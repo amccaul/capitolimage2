@@ -70,7 +70,6 @@ class CapitolUserController (
      * @return true if authenticated, false if not
      */
     // TODO add appropriate error codes, if any applicable
-    @CrossOrigin(origins = ["http://localhost:4200"], allowedHeaders = ["*"])
     @GetMapping("/user/authenticate")
     fun authenticate(webRequest:NativeWebRequest): UserModel? {
         val creds = webRequest.getHeader(HttpHeaders.AUTHORIZATION)!!.substring("Basic".length).trim();

@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS Transaction;
-
-DROP TABLE IF EXISTS Subscription;
+DROP TABLE IF EXISTS capitolImage	;
 DROP TABLE IF EXISTS capitolUser;
 CREATE TABLE capitolUser (
 	User_ID SERIAL PRIMARY KEY,
@@ -17,13 +15,11 @@ CREATE TABLE capitolUser (
 	
 );
 
-DROP TABLE IF EXISTS capitolImage	;
 CREATE TABLE capitolImage (
                                User_ID INTEGER,
                                Image_Id SERIAL PRIMARY KEY,
                                image_name VARCHAR NOT NULL,
-                               url SERIAL,
-                               thumbnailurl VARCHAR,
+                               url VARCHAR,
                                uploaded TIMESTAMP NOT NULL,
                                updated TIMESTAMP NOT NULL,
                                CONSTRAINT fk_capitoluserid

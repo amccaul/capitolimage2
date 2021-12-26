@@ -45,6 +45,7 @@ class SecurityConfiguration (var capitolUserDetailsService:CapitolUserDetailsSer
             .authorizeRequests()
             .antMatchers("/api/public/**").permitAll()
             .antMatchers("/api/user/**").authenticated()
+            .antMatchers("/api/user/images/**").authenticated()
             .antMatchers("/api/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
