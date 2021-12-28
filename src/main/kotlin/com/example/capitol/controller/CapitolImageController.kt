@@ -69,20 +69,6 @@ class CapitolImageController (
     )
     return "redirect:/"*/
 
-
-    /**
-     * By default list only 20 most recently edited
-     */
-    @GetMapping("/recent")
-    @Throws(IOException::class)
-    fun listUploadedFiles_first20(): ArrayList<ThumbnailViewModel>?{
-        val principal = SecurityContextHolder.getContext().authentication.principal
-        if (principal is CapitolUserDetails) {
-           return capitolImageService.get20mostRecentImages_Thumbnails(capitolUser = principal.capitolUser)
-        }
-        //TODO add error code
-        return null
-    }
     /*
         model.addAttribute("files", capitolImageService.loadAll()?.map { path ->
             MvcUriComponentsBuilder.fromMethodName(
@@ -108,8 +94,28 @@ class CapitolImageController (
         return "uploadForm"*/
         return null
     }
+    /**
+     * By default list only 20 most recently edited
+     */
+    @GetMapping("/recent")
+    @Throws(IOException::class)
+    fun listUploadedFiles_first20(): ResponseEntity<ArrayList<ThumbnailViewModel>?>{
+        val principal = SecurityContextHolder.getContext().authentication.principal
+        if (principal is CapitolUserDetails) {
+           return ResponseEntity
+               .ok()
+               .body(capitolImageService.get20mostRecentImages_Thumbnails(capitolUser = principal.capitolUser))
+        }
+        //TODO add error code
+        return ResponseEntity
+            .notFound()
+            .build()
 
-   @GetMapping("/get/{image_Id}")
+    }
+
+
+   //@GetMapping("/get/{image_Id}")
+   @GetMapping(value = arrayOf("/get/{image_Id}"), produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
     fun getImage( @PathVariable image_Id: String ): ResponseEntity<ByteArray> {
        var capitolImage: CapitolImage?
        try {

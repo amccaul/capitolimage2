@@ -80,15 +80,17 @@ class CapitolImageService (
         for (img in imgs){
             //val bytes :ByteArray = File(img.thumbnailurl).readBytes()
             var metadata: ImageMetadata = Imaging.getMetadata(File(img.url).readBytes())
-            var thumbnail : ByteArray = File("C:\\Users\\Alec\\Pictures\\output\\qmark.jpg").readBytes()
+            var thumbnail =File("C:\\Users\\Alec\\Pictures\\output\\qmark.jpg").readBytes()
+            //val inputData = contentResolver.openInputStream(uri)?.readBytes()
+
             if (metadata is JpegImageMetadata) {
+                println("if (metadata is JpegImageMetadata) { ")
                 if (metadata.exifThumbnailData!=null) {
+                    println("if (metadata.exifThumbnailData!=null) {")
                     thumbnail = metadata.exifThumbnailData
+                    println(metadata.exifThumbnailData)
                 }
-
             }
-
-
             thumbnails.add( ThumbnailViewModel(img.image_name, img.updated, thumbnail))
         }
         return thumbnails
