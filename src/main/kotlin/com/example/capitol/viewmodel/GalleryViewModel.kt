@@ -1,3 +1,5 @@
+
+//TODO Delete
 package com.example.capitol.viewmodel
 
 import com.example.capitol.entity.CapitolImage

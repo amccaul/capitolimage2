@@ -1,25 +1,20 @@
 package com.example.capitol.service
 
-import com.drew.imaging.ImageMetadataReader
 import com.example.capitol.entity.CapitolImage
 import com.example.capitol.entity.CapitolUser
 import com.example.capitol.file.FileEnvConfig
 import com.example.capitol.repository.CapitolImageRepository
-import com.example.capitol.viewmodel.DetailsViewModel
-import com.example.capitol.viewmodel.MetadataViewModel
 import com.example.capitol.viewmodel.ThumbnailViewModel
-import org.apache.commons.imaging.Imaging
-import org.apache.commons.imaging.common.ImageMetadata
-import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata
+import net.coobird.thumbnailator.Thumbnails
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import javax.imageio.ImageIO
+
 
 @Service
 class CapitolImageService (
@@ -69,74 +64,30 @@ class CapitolImageService (
 
 
 
-        //figure out a queue system to generate OCR
+        //regardless of what the og file type is the thumb gets saved as jpg
+        var myThumb = Thumbnails.of(  myImageFileURL+"."+myFileType  )
+            .size(200, 200)
+            .outputFormat("jpg")
+            .asBufferedImage()
+        //  myImageFileURL+"_thumb."+myFileType
+        ImageIO.write(myThumb, "jpg", File(myImageFileURL+"_thumb.jpg"))
+        this.updateThumbnailUrlByimageId( savedCapitolImage.image_Id, myImageFileURL+"_thumb.jpg")
+
+     //figure out a queue system to generate OCR
 
     }
+
+
 
     fun get20mostRecentImages_Thumbnails(capitolUser: CapitolUser):ArrayList<ThumbnailViewModel>{
         var thumbnails : ArrayList<ThumbnailViewModel> = ArrayList<ThumbnailViewModel>()
 
         var imgs: Array<CapitolImage> = capitolImageRepository.get20mostRecentCapitolImages(capitolUser.user_Id)
         for (img in imgs){
-            //val bytes :ByteArray = File(img.thumbnailurl).readBytes()
-            var metadata: ImageMetadata = Imaging.getMetadata(File(img.url).readBytes())
-            var thumbnail =File("C:\\Users\\Alec\\Pictures\\output\\qmark.jpg").readBytes()
-            //val inputData = contentResolver.openInputStream(uri)?.readBytes()
-
-            if (metadata is JpegImageMetadata) {
-                println("if (metadata is JpegImageMetadata) { ")
-                if (metadata.exifThumbnailData!=null) {
-                    println("if (metadata.exifThumbnailData!=null) {")
-                    thumbnail = metadata.exifThumbnailData
-                    println(metadata.exifThumbnailData)
-                }
-            }
-            thumbnails.add( ThumbnailViewModel(img.image_name, img.updated, thumbnail))
+            var bytes = File(img.thumbnailurl).readBytes()
+            thumbnails.add( ThumbnailViewModel(img.image_name, img.updated, bytes, img.image_Id))
         }
         return thumbnails
-    }
-
-    fun loadDetails(capitolImage: CapitolImage):DetailsViewModel{
-        /*
-        var thumbnails : ArrayList<ThumbnailViewModel> = ArrayList<ThumbnailViewModel>()
-
-        var imgs: Array<CapitolImage> = capitolImageRepository.get20mostRecentCapitolImages(capitolUser.user_Id)
-        for (img in imgs){
-            //val bytes :ByteArray = File(img.thumbnailurl).readBytes()
-            var metadata: ImageMetadata = Imaging.getMetadata(File(img.url).readBytes())
-            var thumbnail : ByteArray = File("C:\\Users\\Alec\\Pictures\\output\\qmark.jpg").readBytes()
-            if (metadata is JpegImageMetadata) {
-                if (metadata.exifThumbnailData!=null) {
-                    thumbnail = metadata.exifThumbnailData
-                }
-            }
-            thumbnails.add( ThumbnailViewModel(img.image_name, img.updated, thumbnail))
-        }
-        */
-        var myImageFile = File(capitolImage.url)
-        var directories  = ImageMetadataReader.readMetadata(myImageFile)
-        var myMetadata:List<MetadataViewModel> = ArrayList<MetadataViewModel>()
-
-        //TODO make this actually output metadata
-        for (directory in directories.directories){
-            for ( tag in directory.tags ){
-                myMetadata.plus( MetadataViewModel( tag.tagName , tag.description  ) )
-            }
-        }
-
-        var img = ImageIO.read(myImageFile)
-        val baos = ByteArrayOutputStream()
-        ImageIO.write(img, "jpg", baos)
-        val bytes: ByteArray = baos.toByteArray()
-
-        var output = DetailsViewModel(capitolImage.image_name,
-            capitolImage.updated.toString(),
-            capitolImage.uploaded.toString(),
-            bytes,
-            ArrayList<ByteArray>(),
-            myMetadata
-        )
-        return output
     }
 
 
@@ -144,6 +95,9 @@ class CapitolImageService (
 
     fun updateUrlByimageId(image_Id: Int, url: String) {
         capitolImageRepository.updateUrlByimageId(image_Id, url)
+    }
+    fun updateThumbnailUrlByimageId(image_Id: Int, thumbnailurl: String) {
+        capitolImageRepository.updateThumbnailUrlByimageId(image_Id, thumbnailurl)
     }
 
     fun getCapitolImage(image_Id: Int):CapitolImage?{
@@ -168,6 +122,13 @@ class CapitolImageService (
         if (!File(capitolImage.url).canRead())
             throw IOException()
         return File(capitolImage.url).readBytes()
+    }
+    fun loadThumbnail(capitolImage: CapitolImage):ByteArray {
+        if (!File(capitolImage.url).exists())
+            throw FileNotFoundException()
+        if (!File(capitolImage.url).canRead())
+            throw IOException()
+        return File(capitolImage.thumbnailurl).readBytes()
     }
     /*
     fun loadAll(capitolImages: Set<CapitolImage>):Set<Resource> {

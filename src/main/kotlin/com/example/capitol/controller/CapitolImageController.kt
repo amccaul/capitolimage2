@@ -134,22 +134,44 @@ class CapitolImageController (
             .body(bytes)
 
     }
-    @GetMapping("/details/{image_Id}")
-    fun getImageDetails( @PathVariable image_Id : String ): ResponseEntity<DetailsViewModel> {
 
-        var capitolImage : CapitolImage? = null
+    @GetMapping(value = arrayOf("/getThumbnail/{image_Id}"), produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
+    fun getImageThumbnail( @PathVariable image_Id: String ): ResponseEntity<ByteArray> {
+        var capitolImage: CapitolImage?
         try {
             capitolImage = capitolImageService.getCapitolImage(Integer.parseInt(image_Id))
         } catch( exception:NumberFormatException){
-            return ResponseEntity<DetailsViewModel>(HttpStatus.NOT_FOUND)
+            return ResponseEntity<ByteArray>(HttpStatus.NOT_FOUND)
         }
         if (capitolImage == null){
-            return ResponseEntity<DetailsViewModel>(HttpStatus.NOT_FOUND)
+            return ResponseEntity<ByteArray>(HttpStatus.NOT_FOUND)
         }
+
+        var bytes : ByteArray = capitolImageService.loadThumbnail(capitolImage!!)
         return ResponseEntity
             .ok()
-            .body(capitolImageService.loadDetails(capitolImage!!))
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(bytes)
     }
+    //returns image as bytearray
+    /*@GetMapping(value = arrayOf("/getthumbnail/{image_Id}"), produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
+    fun getImageThumbnail( @PathVariable image_Id: String ): ResponseEntity<ByteArray> {
+        var capitolImage: CapitolImage?
+        try {
+            capitolImage = capitolImageService.getCapitolImage(Integer.parseInt(image_Id))
+        } catch( exception:NumberFormatException){
+            return ResponseEntity<ByteArray>(HttpStatus.NOT_FOUND)
+        }
+        if (capitolImage == null){
+            return ResponseEntity<ByteArray>(HttpStatus.NOT_FOUND)
+        }
+
+        var bytes : ByteArray = capitolImageService.loadThumbnail(capitolImage!!)
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(bytes)
+    }*/
 
 /*
     @GetMapping("/files/{filename:.+}")

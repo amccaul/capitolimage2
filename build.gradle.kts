@@ -79,6 +79,15 @@ dependencies {
     implementation("org.springframework:spring-mock:2.0.8")
 
     implementation("com.drewnoakes:metadata-extractor:2.16.0")
+
+
+    //too complicated to use
+    // https://mvnrepository.com/artifact/net.imagej/ij
+    //implementation("net.imagej:ij:1.53j")
+
+    // https://mvnrepository.com/artifact/net.coobird/thumbnailator
+    implementation("net.coobird:thumbnailator:0.4.17")
+
     //can't get this working for some reason, dependency won't resolve
     // https://mvnrepository.com/artifact/com.github.downgoon/marvin
     //    implementation("com.github.downgoon:marvin:1.5.5")

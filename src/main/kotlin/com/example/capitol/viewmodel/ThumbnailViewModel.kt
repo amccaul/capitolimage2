@@ -5,5 +5,6 @@ import java.time.LocalDateTime
 data class ThumbnailViewModel (
     var image_name:String,
     var updated: LocalDateTime,
-    var image: ByteArray
+    var thumbnail: ByteArray,
+    var image_id:Int,
         )

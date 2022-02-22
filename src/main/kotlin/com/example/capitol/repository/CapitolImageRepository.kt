@@ -18,6 +18,12 @@ interface CapitolImageRepository : JpaRepository<CapitolImage, Int> {
     fun updateUrlByimageId(image_Id: Int, url: String)
 
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE capitolimage i SET i.thumbnailurl = :thumbnailurl WHERE i.image_Id = :image_Id ")
+    fun updateThumbnailUrlByimageId(image_Id: Int, thumbnailurl: String)
+
+
     @Query ("SELECT * FROM capitolImage i WHERE i.user_Id = :user_Id " +
             "ORDER BY updated DESC LIMIT 20", nativeQuery=true)
     fun get20mostRecentCapitolImages( user_Id: Int ):Array<CapitolImage>
