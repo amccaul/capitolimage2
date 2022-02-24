@@ -153,6 +153,25 @@ class CapitolImageController (
             .contentType(MediaType.IMAGE_JPEG)
             .body(bytes)
     }
+    @GetMapping("/details/{image_Id}")
+    fun getDetailsViewModel( @PathVariable image_Id: String ): ResponseEntity<DetailsViewModel> {
+        var capitolImage: CapitolImage?
+        try {
+            capitolImage = capitolImageService.getCapitolImage(Integer.parseInt(image_Id))
+        } catch( exception:NumberFormatException){
+            return ResponseEntity<DetailsViewModel>(HttpStatus.NOT_FOUND)
+        }
+        if (capitolImage == null){
+            return ResponseEntity<DetailsViewModel>(HttpStatus.NOT_FOUND)
+        }
+
+        var dvm:DetailsViewModel = DetailsViewModel(capitolImage.image_Id.toString(), capitolImage.image_name, capitolImage.updated.toString(),
+                capitolImage.uploaded.toString(), capitolImage.url, capitolImage.thumbnailurl)
+        return ResponseEntity
+            .ok()
+            //.contentType(MediaType.IMAGE_JPEG)
+            .body(dvm)
+    }
     //returns image as bytearray
     /*@GetMapping(value = arrayOf("/getthumbnail/{image_Id}"), produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
     fun getImageThumbnail( @PathVariable image_Id: String ): ResponseEntity<ByteArray> {
